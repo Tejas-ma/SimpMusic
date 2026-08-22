@@ -1,5 +1,7 @@
 package com.maxrave.simpmusic.ui.component
 
+
+
 import android.graphics.Bitmap
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -19,7 +21,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import com.maxrave.simpmusic.ui.icon.SimpIcons
+import com.maxrave.simpmusic.ui.icon.Mic
 import androidx.compose.runtime.Composable
+import com.maxrave.simpmusic.expect.ui.rememberVoiceSearchLauncher
+import android.app.UiModeManager
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -47,6 +56,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.maxrave.domain.data.player.GenericMediaItem
 import com.maxrave.logger.Logger
 import com.maxrave.simpmusic.expect.ui.PlatformBackdrop
+import com.maxrave.simpmusic.ui.ext.hapticClickable
 import com.maxrave.simpmusic.ui.navigation.destination.home.AnalyticsDestination
 import com.maxrave.simpmusic.ui.navigation.destination.home.HomeDestination
 import com.maxrave.simpmusic.ui.navigation.destination.library.LibraryDestination
@@ -163,6 +173,13 @@ actual fun LiquidGlassAppBottomNavigationBar(
     }
     var isExpanded by rememberSaveable {
         mutableStateOf(true)
+    }
+
+    val context = LocalContext.current
+    val voiceSearchLauncher = rememberVoiceSearchLauncher { query ->
+        if (query.isNotBlank()) {
+            navController.navigate(SearchDestination)
+        }
     }
 
     var isInSearchDestination by remember {
@@ -296,10 +313,20 @@ actual fun LiquidGlassAppBottomNavigationBar(
                                 luminanceAnimation.value,
                                 CircleShape,
                                 searchFabInteraction,
-                            ).clickable { selectTab(BottomNavScreen.Search.ordinal) },
+                            ).hapticClickable {
+                                if (isInSearchDestination) {
+                                    voiceSearchLauncher()
+                                } else {
+                                    selectTab(BottomNavScreen.Search.ordinal)
+                                }
+                            },
                     contentAlignment = Alignment.Center,
                 ) {
-                    BottomNavScreen.Search.icon()
+                    if (isInSearchDestination) {
+                        androidx.compose.material3.Icon(com.maxrave.simpmusic.ui.icon.SimpIcons.Mic, contentDescription = "Voice Search")
+                    } else {
+                        BottomNavScreen.Search.icon()
+                    }
                 }
             } else {
                 val selectedScreen =
@@ -315,7 +342,7 @@ actual fun LiquidGlassAppBottomNavigationBar(
                                 luminanceAnimation.value,
                                 CircleShape,
                                 toolbarInteraction,
-                            ).clickable { isExpanded = true },
+                            ).hapticClickable { isExpanded = true },
                     contentAlignment = Alignment.Center,
                 ) {
                     selectedScreen.icon()
