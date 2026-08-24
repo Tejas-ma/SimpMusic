@@ -199,7 +199,7 @@ fun FullscreenPlayer(
         if (!isInPipMode) {
             Row(Modifier.fillMaxSize(){
                 
-                }) {
+                
                 // Left side
                 Box(
                     Modifier
@@ -215,7 +215,7 @@ fun FullscreenPlayer(
                             indication = ripple(),
                         ).pointerInput(Unit) {
                             detectTapGestures(
-                                onTap = { showHideFullscreenOverlay = !showHideFullscreenOverlay }
+                                onTap = { showHideFullscreenOverlay = !showHideFullscreenOverlay },
                                 onDoubleTap = { offset ->
                                     coroutineScope.launch {
                                         doubleBackwardTapped = true
@@ -265,7 +265,7 @@ fun FullscreenPlayer(
                             indication = ripple(),
                         ).pointerInput(Unit) {
                             detectTapGestures(
-                                onTap = { showHideFullscreenOverlay = !showHideFullscreenOverlay } 
+                                onTap = { showHideFullscreenOverlay = !showHideFullscreenOverlay },
                                 onDoubleTap = { offset ->
                                     coroutineScope.launch {
                                         doubleForwardTapped = true
