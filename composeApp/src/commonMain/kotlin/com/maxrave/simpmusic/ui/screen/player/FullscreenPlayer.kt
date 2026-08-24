@@ -197,7 +197,7 @@ fun FullscreenPlayer(
             translatedTextStyle = typo().bodyMedium,
         )
         if (!isInPipMode) {
-            Row(Modifier.fillMaxSize(){
+            Row(Modifier.fillMaxSize()){
                 
                 
                 // Left side
@@ -266,6 +266,7 @@ fun FullscreenPlayer(
                         ).pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = { showHideFullscreenOverlay = !showHideFullscreenOverlay },
+                    
                                 onDoubleTap = { offset ->
                                     coroutineScope.launch {
                                         doubleForwardTapped = true
